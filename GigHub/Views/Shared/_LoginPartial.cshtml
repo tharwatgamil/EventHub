@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-right">
+       <li class="notifications"> 
+           <a href="#">
+             <i class="glyphicon glyphicon-globe"></i>
+             <span class="badge js-notifications-count hide"></span>
+           </a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                @User.Identity.GetUserName()
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="@Url.Action("Mine","Gigs")">My Upcoming Gigs</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Attending","Gigs")">Gigs I'm going</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Index","Followees")">Artists I'm following</a></li>
+                <li role="separator" class="divider"> </li>
+                <li> <a class="dropdown-item" href="#">Something else here</a></li>
+                <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+
+            </ul>
+        </li>
+    </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

@@ -1,0 +1,74 @@
+﻿@model GigHub.Core.ViewModels.GigDetailsViewModel
+
+@{
+    ViewBag.Title = "Details";
+
+}
+
+    <h2>
+        @Model.Gig.Artist.Name
+        @if (User.Identity.IsAuthenticated)
+        {
+            if (Model.IsFollowing)
+            {
+                <button id="follow" class="btn btn-info js-toggle-follow" data-user-id="@Model.Gig.ArtistId"> Following</button>
+            }
+            else
+            {
+                <button id="follow" class="btn btn-default js-toggle-follow" data-user-id="@Model.Gig.ArtistId"> Follow</button>
+            }
+        }
+    </h2>
+
+<p> Performing at @Model.Gig.Venue on @Model.Gig.DateTime.ToString("d MMM") at @Model.Gig.DateTime.ToString("HH:mm")</p>
+
+@if(User.Identity.IsAuthenticated && Model.IsAttending)
+{
+    <p> You are going to this event</p>
+}
+
+@section scripts{
+    
+    <script>
+
+        $(document).ready(function () {
+            $(".js-toggle-follow").click(function (e) {
+                var button = $(e.target);
+                if (button.has("btn-default")) {
+                 
+                    $.post("/api/followings", { followeeId: button.attr("data-user-id") })
+                        .done(function () {
+                            button
+                                .removeClass("btn-default")
+                                .addClass("btn-info")
+                                .text("following")
+                        })
+                        //.fail(function () {
+                        //    alert("Something went wrong")
+                        //})
+                }
+                 if (button.hasClass("btn-info")){
+                     $.ajax({
+                         url: "/api/followings/" + button.attr("data-user-id"),
+                         method: "DELETE"
+                     })
+                         .done(function () {
+                             button.removeClass("btn-info")
+                                 .addClass("btn-default")
+                                 .text("follow")
+                         })
+                        //.fail(function () {
+                        //    alert("Something failed");
+                        //});
+                }
+            })
+
+
+        });
+
+    </script>
+    
+    }
+
+
+
